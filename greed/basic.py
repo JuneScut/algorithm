@@ -135,43 +135,68 @@
 
 
 # 【medium】763. 划分字母区间
+# class Solution(object):
+#     def takeFirst(self, element):
+#         return element[0]
+
+#     def partitionLabels(self, S):
+#         """
+#         :type S: str
+#         :rtype: List[int]
+#         """
+
+#         d = {}
+#         for idx, char in enumerate(S):
+#             if char in d:
+#                 d[char][1] = idx
+#             else:
+#                 d[char] = [idx, idx]
+
+#         vectors = list(d.values())
+#         if len(vectors) == 0:
+#             return []
+#         vectors.sort(key=self.takeFirst)
+#         prevS = vectors[0][0]
+#         prevE = vectors[0][1]
+#         result = []
+#         for idx in range(1, len(vectors)):
+#             currentS = vectors[idx][0]
+#             currentE = vectors[idx][1]
+#             if currentS > prevE:
+#                 result.append(prevE-prevS + 1)
+#                 prevS = currentS
+#                 prevE = currentE
+#             elif currentE > prevE:
+#                 prevE = currentE
+#         result.append(prevE-prevS + 1)
+
+#         return result
+
+
+# solution = Solution()
+# print(solution.partitionLabels(""))
+
+
+# 122 股票交易
 class Solution(object):
-    def takeFirst(self, element):
-        return element[0]
-
-    def partitionLabels(self, S):
+    def maxProfit(self, prices):
         """
-        :type S: str
-        :rtype: List[int]
+        :type prices: List[int]
+        :rtype: int
         """
-
-        d = {}
-        for idx, char in enumerate(S):
-            if char in d:
-                d[char][1] = idx
+        length = len(prices)
+        if length == 0:
+            return 0
+        profit = 0
+        lst = prices[0]
+        for index in range(1, length):
+            if prices[index] > lst:
+                profit += prices[index] - lst
+                lst = prices[index]
             else:
-                d[char] = [idx, idx]
-
-        vectors = list(d.values())
-        if len(vectors) == 0:
-            return []
-        vectors.sort(key=self.takeFirst)
-        prevS = vectors[0][0]
-        prevE = vectors[0][1]
-        result = []
-        for idx in range(1, len(vectors)):
-            currentS = vectors[idx][0]
-            currentE = vectors[idx][1]
-            if currentS > prevE:
-                result.append(prevE-prevS + 1)
-                prevS = currentS
-                prevE = currentE
-            elif currentE > prevE:
-                prevE = currentE
-        result.append(prevE-prevS + 1)
-
-        return result
+                lst = prices[index]
+        return profit
 
 
 solution = Solution()
-print(solution.partitionLabels(""))
+print(solution.maxProfit([7, 6, 4, 3, 1]))
