@@ -17,7 +17,7 @@
 #         def dfs(index, tmp):
 #             if(index >= len(arr)):
 #                 return len(tmp)
-            
+
 #             flag = set(tmp) & set(arr[index])
 #             if(not flag):
 #                 return max(dfs(index+1, tmp+arr[index]), dfs(index+1, tmp))
@@ -45,11 +45,11 @@
 #         cLen = len(board[0])
 
 #         marked = [[False for _ in range(cLen)] for _ in range(rLen)]
-        
+
 #         def dfs(index, i, j):
 #             if index == wordLenIdx:
 #                 return board[i][j] == word[index]
-            
+
 #             flag = word[index] == board[i][j]
 #             if flag:
 #                 marked[i][j] = True
@@ -67,7 +67,7 @@
 #                 if dfs(0, idx, jdx):
 #                     return True
 #         return False
-             
+
 # solution = Solution()
 # print(solution.exist([
 #   ['A','B','C','E'],
@@ -76,43 +76,95 @@
 # ], "ABCB"
 # ))
 
+# 200 海岛数量
+# class Solution(object):
+#     def numIslands(self, grid):
+#         """
+#         :type grid: List[List[str]]
+#         :rtype: int
+#         """
+
+#         def inArea(grid, r, c):
+#             return 0 <= r and r < len(grid) and 0 <= c and c < len(grid[0]) if len(grid) > 0 else False
+
+#         def dfs(grid, r, c):
+#             if inArea(grid, r, c) == False:
+#                 return
+#             if grid[r][c] != '1':
+#                 return
+#             grid[r][c] = '2'
+#             dfs(grid, r+1, c)
+#             dfs(grid, r, c+1)
+#             dfs(grid, r-1, c)
+#             dfs(grid, r, c-1)
+
+#         count = 0
+#         for r in range(0, len(grid)):
+#             for c in range(0, len(grid[0])):
+#                 if grid[r][c] == '1':
+#                     dfs(grid, r, c)
+#                     count += 1
+
+#         return count
+
+
+# solution = Solution()
+# print(solution.numIslands([
+#     ["1", "1", "0", "0", "0"],
+#     ["1", "1", "0", "0", "0"],
+#     ["0", "0", "1", "0", "0"],
+#     ["0", "0", "0", "1", "1"]
+# ]))
+
 
 class Solution(object):
-    def numIslands(self, grid):
+    def solve(self, board):
         """
-        :type grid: List[List[str]]
-        :rtype: int
+        :type board: List[List[str]]
+        :rtype: None Do not return anything, modify board in-place instead.
         """
-        
-        def inArea(grid, r, c):
-            return 0 <= r and r < len(grid) and 0 <= c and c < len(grid[0]) if len(grid) > 0 else False
+        if (len(board) == 0):
+            return
 
-        def dfs(grid, r, c):
-            if inArea(grid, r, c) == False :
-                return
-            if grid[r][c] != '1':
-                return
-            grid[r][c] = '2'
-            dfs(grid, r+1, c)
-            dfs(grid, r, c+1)
-            dfs(grid, r-1, c)
-            dfs(grid, r, c-1)
-            
-        
-        count = 0
-        for r in range(0, len(grid)):
-            for c in range(0, len(grid[0])):
-                if grid[r][c] == '1':
-                    dfs(grid, r, c)
-                    count += 1
+        def inArea(board, r, c):
+            return 0 <= r and r < len(board) and 0 <= c and c < len(board[0])
 
-        return count
-        
+        def dfs(board, r, c):
+            if inArea(board, r, c) == False:
+                return
+            if board[r][c] != 'O':
+                return
+            board[r][c] = 'A'
+            dfs(board, r+1, c)
+            dfs(board, r-1, c)
+            dfs(board, r, c+1)
+            dfs(board, r, c-1)
+
+        # 遍历边界
+        rLen = len(board)
+        cLen = len(board[0])
+        for i in range(0, rLen):
+            dfs(board, i, 0)
+            dfs(board, i, cLen - 1)
+        for j in range(0, cLen):
+            dfs(board, 0, j)
+            dfs(board, rLen-1, j)
+
+        for r in range(0, rLen):
+            for c in range(0, cLen):
+                if board[r][c] == 'A':
+                    board[r][c] = 'O'
+                elif board[r][c] == 'O':
+                    board[r][c] = 'X'
+                print(board[r][c], end=" ")
+            print("")
+
 
 solution = Solution()
-print(solution.numIslands([
-  ["1","1","0","0","0"],
-  ["1","1","0","0","0"],
-  ["0","0","1","0","0"],
-  ["0","0","0","1","1"]
-]))
+grid = [
+    ['X', 'X', 'X', 'X'],
+    ['X', 'O', "O", 'O'],
+    ['X', 'X', 'O', 'X'],
+    ['X', 'O', 'X', 'X'],
+]
+solution.solve(grid)
