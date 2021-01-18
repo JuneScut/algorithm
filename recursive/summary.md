@@ -16,3 +16,5 @@ def dfs(grid, r, c):
     dfs(grid, r-1, c)
     dfs(grid, r, c-1)
 ```
+
+深度遍历的开始条件根据题目决定
