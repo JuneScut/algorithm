@@ -1,3 +1,7 @@
+# !/usr/bin/env python3
+# coding=utf-8
+from typing import List
+
 # 爬楼梯
 # class Solution(object):
 #     def minCostClimbingStairs(self, cost):
@@ -51,14 +55,33 @@
 #         for i in range(m - 1, -1, -1):
 #             for j in range(26):
 #                 f[i][j] = i if ord(t[i]) == j + ord('a') else f[i + 1][j]
-        
+
 #         add = 0
 #         for i in range(n):
 #             if f[add][ord(s[i]) - ord('a')] == m:
 #                 return False
 #             add = f[add][ord(s[i]) - ord('a')] + 1
-        
+
 #         return True
 
 # solution = Solution()
 # print(solution.isSubsequence("abc", "ahbgdc"))
+
+# 【最大子数组和】[53](https://leetcode-cn.com/problems/maximum-subarray/)
+
+
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        n = len(nums)
+        dp = [0] * n
+        dp[0] = nums[0]
+        maxSum = dp[0]
+        for i in range(1, n):
+            dp[i] = max(nums[i], nums[i] + dp[i-1])
+            if dp[i] > maxSum:
+                maxSum = dp[i]
+        return maxSum
+
+
+solution = Solution()
+print(solution.maxSubArray([0]))

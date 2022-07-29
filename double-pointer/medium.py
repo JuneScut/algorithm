@@ -89,32 +89,58 @@ import math
 #             else:
 #                 left += 1
 #         return False
-        
+
 
 # solution = Solution()
 # print(solution.judgeSquareSum(1))
 
 # 680. 验证回文字符串 Ⅱ
-class Solution:
-    def validPalindrome(self, s: str) -> bool:
-        def checkPalindrome(low, high):
-            i, j = low, high
-            while i < j:
-                if s[i] != s[j]:
-                    return False
-                i += 1
-                j -= 1
-            return True
+# class Solution:
+#     def validPalindrome(self, s: str) -> bool:
+#         def checkPalindrome(low, high):
+#             i, j = low, high
+#             while i < j:
+#                 if s[i] != s[j]:
+#                     return False
+#                 i += 1
+#                 j -= 1
+#             return True
 
-        low, high = 0, len(s) - 1
-        while low < high:
-            if s[low] == s[high]: 
-                low += 1
-                high -= 1
-            else:
-                return checkPalindrome(low + 1, high) or checkPalindrome(low, high - 1)
-        return True
+#         low, high = 0, len(s) - 1
+#         while low < high:
+#             if s[low] == s[high]:
+#                 low += 1
+#                 high -= 1
+#             else:
+#                 return checkPalindrome(low + 1, high) or checkPalindrome(low, high - 1)
+#         return True
+
+
+# solution = Solution()
+# print(solution.validPalindrome("aguokepatgbnvfqmgmlcupuufxoohdfpgjdmysgvhmvffcnqxjjxqncffvmhvgsymdjgpfdhooxfuupuculmgmqfvnbgtapekouga"))
+
+
+# 【5】[最长回文子串](https://leetcode-cn.com/problems/longest-palindromic-substring/)
+class Solution:
+    # 找出以 left 和 right 为中心的回文子串, l == r 表示回文子串长度为奇数
+    def palindrome(self, s: str, l: int, r: int):
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            l -= 1
+            r += 1
+        # 返回以 s[l] 和 s[r] 为中心的最长回文串的下标
+        return l+1, r-1
+
+    def longestPalindrome(self, s: str) -> str:
+        start, end = 0, 0
+        for i in range(0, len(s)):
+            left1, right1 = self.palindrome(s, i, i)
+            left2, right2 = self.palindrome(s, i, i+1)
+            if right1 - left1 > end - start:
+                start, end = left1, right1
+            if right2 - left2 > end - start:
+                start, end = left2, right2
+        return s[start: end + 1]
 
 
 solution = Solution()
-print(solution.validPalindrome("aguokepatgbnvfqmgmlcupuufxoohdfpgjdmysgvhmvffcnqxjjxqncffvmhvgsymdjgpfdhooxfuupuculmgmqfvnbgtapekouga"))
+print(solution.longestPalindrome(""))
