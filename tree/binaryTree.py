@@ -216,6 +216,72 @@ class Solution:
             return 1 + max(right, left)
 
 
-solution = Solution()
-print(solution.diameterOfBinaryTree(TreeNode(1, TreeNode(2, TreeNode(
-    4, None, None), TreeNode(5, None, None)), TreeNode(3, None, None))))
+# solution = Solution()
+# print(solution.diameterOfBinaryTree(TreeNode(1, TreeNode(2, TreeNode(
+#     4, None, None), TreeNode(5, None, None)), TreeNode(3, None, None))))
+
+# 【剑指offer55】 [二叉树的深度](https://leetcode.cn/problems/er-cha-shu-de-shen-du-lcof/)
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
+
+
+# solution = Solution()
+# print(solution.maxDepth(TreeNode(3, TreeNode(9, None, None),
+#       TreeNode(20, TreeNode(15, None, None), TreeNode(7, None, None)))))
+
+# 【116】 [填充每个节点的下一个右侧节点指针](https://leetcode.cn/problems/populating-next-right-pointers-in-each-node/)
+# 不同子树的相邻节点的 next 指针应该如何指？ ---> 三叉树
+
+class Node:
+    def __init__(self, val: int = 0, left: 'Node' = None, right: 'Node' = None, next: 'Node' = None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+
+
+class Solution:
+    def connect(self, root: 'Optional[Node]') -> 'Optional[Node]':
+        if not root:
+            return None
+        self.travel(root.left, root.right)
+        return root
+
+    def travel(self, node1: 'Optional[Node]',  node2: 'Optional[Node]'):
+        if not node1 or not node2:
+            return
+
+        node1.next = node2
+        # 各自子树串
+        self.travel(node1.left, node1.right)
+        self.travel(node2.left, node2.right)
+        # 相邻子树
+        self.travel(node1.right, node2.left)
+
+
+# 【114】 [二叉树展开为链表](https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/)
+class Solution:
+    def flatten(self, root: Optional[TreeNode]) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        if not root:
+            return
+
+        # 先把左右子树各自拉平
+        self.flatten(root.left)
+        self.flatten(root.right)
+
+        # 将左子树作为右子树
+        left = root.left
+        right = root.right
+        root.left = None
+        root.right = left
+        # 把原有的右子树连到新的右子树上
+        p = root
+        while p.right:
+            p = p.right
+        p.right = right
