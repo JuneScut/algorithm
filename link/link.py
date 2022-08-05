@@ -69,3 +69,46 @@ list2 = ListNode(3, cross)
 solution = Solution()
 c = solution.getIntersectionNode(list1, list2)
 print(c.val if c != None else c)
+
+# 【206】 [反转链表](https://leetcode.cn/problems/reverse-linked-list/)
+
+
+class Solution:
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        # base case
+        if not head or not head.next:
+            return head
+        # 翻转除了 head 的剩余部分, 返回的为最后一个节点
+        last = self.reverseList(head.next)
+        head.next.next = head
+        head.next = None
+        return last
+
+# 【92】 [反转链表II](https://leetcode.cn/problems/reverse-linked-list-ii/)
+
+
+class Solution:
+    def __init__(self) -> None:
+        self.successor = None
+
+    def reverseBetween(self, head: Optional[ListNode], left: int, right: int) -> Optional[ListNode]:
+        if left == 1:
+            return self.reveresN(head, right)
+        head.next = self.reverseBetween(head.next, left-1, right-1)
+        return head
+
+    # 反转链表的前 n 个节点 https://labuladong.github.io/algo/images/%e5%8f%8d%e8%bd%ac%e9%93%be%e8%a1%a8/7.jpg
+
+    def reveresN(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        if n == 1:
+            self.successor = head.next  # 记录第 n+1 个节点
+            return head
+        last = self.reveresN(head.next, n-1)
+        head.next.next = head
+        head.next = self.successor
+        return last
+
+
+solution = Solution()
+l = ListNode(1, ListNode(2, ListNode(3, ListNode(4, ListNode(5, None)))))
+solution.reverseBetween(l, 2, 4)
