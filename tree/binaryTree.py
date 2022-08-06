@@ -1,9 +1,6 @@
 
 import math
-from turtle import left, right
 from typing import List, Optional
-
-from numpy import var
 
 
 class TreeNode:
@@ -285,3 +282,205 @@ class Solution:
         while p.right:
             p = p.right
         p.right = right
+
+
+# 【27】 [二叉树的镜像](https://leetcode.cn/problems/er-cha-shu-de-jing-xiang-lcof/)
+class Solution:
+    def mirrorTree(self, root: TreeNode) -> TreeNode:
+        if not root:
+            return None
+        left = self.mirrorTree(root.left)
+        right = self.mirrorTree(root.right)
+        root.left = right
+        root.right = left
+        return root
+
+# 【剑指offer 26】 [树的子结构](https://leetcode.cn/problems/shu-de-zi-jie-gou-lcof/)
+
+
+class Solution:
+    # 遍历思维，A和B完全相同、A的左子树和B相同、A的右子树和B相同
+    def isSubStructure(self, A: TreeNode, B: TreeNode) -> bool:
+        if not A or not B:
+            return False
+        if A.val == B.val and self.comapare(A, B):
+            return True
+        return self.isSubStructure(A.left, B) or self.isSubStructure(A.right, B)
+
+    # 分解思维，两颗🌲相等：当根节点值相同且左右子树也相同
+    def comapare(self, A: TreeNode, B: TreeNode) -> bool:
+        if not B:
+            return True
+        if not A and B:
+            return False
+        if A.val != B.val:
+            return False
+        return self.comapare(A.left, B.left) and self.comapare(A.right, B.right)
+
+# 【654】 [最大二叉树](https://leetcode.cn/problems/maximum-binary-tree/)
+
+
+class Solution:
+    def constructMaximumBinaryTree(self, nums: List[int]) -> Optional[TreeNode]:
+        return self.build(nums, 0, len(nums)-1)
+
+    def build(self, nums: List[int], left: int, right: int) -> Optional[TreeNode]:
+        # base case
+        if left > right:
+            return None
+        # 找出最大值和对应下标
+        maxVal, maxIndex = -9999, -1
+        for i in range(left, right+1, 1):
+            if nums[i] > maxVal:
+                maxVal = nums[i]
+                maxIndex = i
+        # 构建🌲
+        root = TreeNode(maxVal)
+        root.left = self.build(nums, left, maxIndex-1)
+        root.right = self.build(nums, maxIndex+1, right)
+        return root
+
+
+# solution = Solution()
+# print(solution.constructMaximumBinaryTree([3, 2, 1, 6, 0, 5]).val)
+
+# 【105】 [从前序和中序遍历中构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+# https://labuladong.github.io/algo/images/%e4%ba%8c%e5%8f%89%e6%a0%91%e7%b3%bb%e5%88%972/6.jpeg
+
+class Solution:
+    def __init__(self) -> None:
+        self.map = {}
+
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+        for i in range(0, len(inorder)):
+            self.map[inorder[i]] = i
+        return self.build(preorder, 0, len(preorder)-1, inorder, 0, len(inorder)-1)
+
+    def build(self, preorder: List[int], preStart: int, preEnd: int, inorder: List[int], inStart: int, inEnd: int) -> Optional[TreeNode]:
+        # base case
+        if preStart > preEnd:
+            return None
+        # root 是 preorder 的第一个结点
+        root = TreeNode(preorder[preStart])
+        # 划分出 inorder 左右子树
+        index = self.map.get(preorder[preStart])
+        leftSize = index - inStart
+        root.left = self.build(preorder, preStart+1, preStart+leftSize,
+                               inorder, inStart, index-1)
+        root.right = self.build(preorder, preStart+leftSize+1, preEnd,
+                                inorder, index+1, inEnd)
+        return root
+
+
+# solution = Solution()
+# print(solution.buildTree([3, 9, 20, 15, 7], [9, 3, 15, 20, 7]).val)
+
+# 【889】 [](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-postorder-traversal/)
+class Solution:
+    def __init__(self) -> None:
+        self.postMap = {}
+
+    def constructFromPrePost(self, preorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+        for i in range(0, len(postorder)):
+            self.postMap[postorder[i]] = i
+        root = self.build(preorder, 0, len(preorder)-1,
+                          postorder, 0, len(postorder)-1)
+        return root
+
+    def build(self, preorder: List[int], preStart: int, preEnd: int, postorder: List[int], postStart, postEnd) -> Optional[TreeNode]:
+        # base case
+        if preStart > preEnd:
+            return None
+        # root
+        rootVal = preorder[preStart]
+        root = TreeNode(rootVal)
+        if preStart + 1 > preEnd:
+            return root
+        # 左子树的根节点
+        leftRootVal = preorder[preStart+1]
+        index = self.postMap.get(leftRootVal)
+        leftSize = index - postStart + 1
+        root.left = self.build(preorder, preStart+1,
+                               preStart+leftSize, postorder, postStart, index)
+        root.right = self.build(
+            preorder, preStart+leftSize+1, preEnd, postorder, index+1, postEnd - 1)
+        return root
+
+
+# solution = Solution()
+# print(solution.constructFromPrePost(
+#     [1, 2, 4, 5, 3, 6, 7], [4, 5, 2, 6, 7, 3, 1]).val)
+
+
+# 【1008】 [前序遍历构建二叉搜索树](https://leetcode.cn/problems/construct-binary-search-tree-from-preorder-traversal/)
+class Solution:
+    def bstFromPreorder(self, preorder: List[int]) -> Optional[TreeNode]:
+        return self.build(preorder, 0, len(preorder)-1)
+
+    def build(self, preorder: List[int], start: int, end: int) -> Optional[TreeNode]:
+        if start > end:
+            return None
+        rootVal = preorder[start]
+        root = TreeNode(rootVal)
+        p = start + 1
+        while p <= end and preorder[p] < rootVal:
+            p += 1
+        root.left = self.build(preorder, start+1, p-1)
+        root.right = self.build(preorder, p, end)
+        return root
+
+
+# solution = Solution()
+# print(solution.bstFromPreorder([8, 5, 1, 7, 10, 12]).val)
+
+# 【297】 [二叉树的序列化和反序列化](https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/)
+class Codec:
+
+    def __init__(self) -> None:
+        self.sb = ''
+        self.NULL = '#'
+        self.SEP = ','
+
+    def serialize(self, root: Optional[TreeNode]):
+        """Encodes a tree to a single string.
+
+        :type root: TreeNode
+        :rtype: str
+        """
+        if not root:
+            self.sb += self.NULL
+            self.sb += self.SEP
+            return self.sb
+        self.sb += f'{root.val}'
+        self.sb += self.SEP
+        self.serialize(root.left)
+        self.serialize(root.right)
+        return self.sb
+
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+
+        :type data: str
+        :rtype: TreeNode
+        """
+        nodes = data.split(self.SEP)
+        return self.deserializeTool(nodes)
+
+    def deserializeTool(self, nodes: list) -> Optional[TreeNode]:
+        if not nodes or len(nodes) == 0:
+            return None
+        first = nodes.pop(0)
+        if first == self.NULL or not first:
+            return None
+        root = TreeNode(int(first))
+        root.left = self.deserializeTool(nodes)
+        root.right = self.deserializeTool(nodes)
+        return root
+
+
+solution = Codec()
+val = solution.serialize(root=TreeNode(1, TreeNode(2, None, None), TreeNode(
+    3, TreeNode(4, None, None), TreeNode(5, None, None))))
+print(val)
+root = solution.deserialize(val)
+print(root.val)
