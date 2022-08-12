@@ -1,5 +1,7 @@
 
 import math
+from optparse import Option
+from turtle import right
 from typing import List, Optional
 
 
@@ -112,6 +114,7 @@ class Solution:
 # 【36】 [二叉搜索树和双向链表](https://leetcode.cn/problems/er-cha-sou-suo-shu-yu-shuang-xiang-lian-biao-lcof/?show=1)
 # 二叉树节点数据结果和双向链表一致
 # 二叉搜索树：双向遍历
+# BST
 class Node:
     def __init__(self, val, left=None, right=None):
         self.val = val
@@ -413,6 +416,7 @@ class Solution:
 
 
 # 【1008】 [前序遍历构建二叉搜索树](https://leetcode.cn/problems/construct-binary-search-tree-from-preorder-traversal/)
+# BST
 class Solution:
     def bstFromPreorder(self, preorder: List[int]) -> Optional[TreeNode]:
         return self.build(preorder, 0, len(preorder)-1)
@@ -478,9 +482,115 @@ class Codec:
         return root
 
 
-solution = Codec()
-val = solution.serialize(root=TreeNode(1, TreeNode(2, None, None), TreeNode(
-    3, TreeNode(4, None, None), TreeNode(5, None, None))))
-print(val)
-root = solution.deserialize(val)
-print(root.val)
+# solution = Codec()
+# val = solution.serialize(root=TreeNode(1, TreeNode(2, None, None), TreeNode(
+#     3, TreeNode(4, None, None), TreeNode(5, None, None))))
+# print(val)
+# root = solution.deserialize(val)
+# print(root.val)
+
+
+# 【652】 [寻找重复的子树](https://leetcode.cn/problems/find-duplicate-subtrees/)
+class Solution:
+    def __init__(self) -> None:
+        self.memo = {}
+        self.res = []
+
+    def findDuplicateSubtrees(self, root: Optional[TreeNode]) -> List[Optional[TreeNode]]:
+        self.travel(root)
+        return self.res
+
+    def travel(self, root: Optional[TreeNode]) -> str:
+        if not root:
+            return '#'
+        left = self.travel(root.left)
+        right = self.travel(root.right)
+        data = f'{left},{right},{root.val}'
+        val = self.memo.get(data, 0)
+        if val == 1:
+            self.res.append(root)
+        self.memo[data] = val + 1
+        return data
+
+
+# solution = Solution()
+# print(solution.findDuplicateSubtrees(
+#     TreeNode(2, TreeNode(1, None, None), TreeNode(1, None, None)))[0].val)
+
+# 【315】 [计算右侧小于当前元素的个数](https://leetcode.cn/problems/count-of-smaller-numbers-after-self/)
+# 利用归并排序，两边都是有序数组的特性
+class Solution:
+    class Pair:
+        def __init__(self, val: int, index: int) -> None:
+            self.val = val
+            self.index = index
+
+    def __init__(self) -> None:
+        # 记录元素原始的索引位置
+        self.temp = []
+        # 记录每个元素后面比自己小的元素个数
+        self.count = []
+
+    def countSmaller(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        arr = []
+        for i in range(n):
+            arr.append(self.Pair(nums[i], i))
+        self.temp = [None] * n
+        self.count = [0] * n
+        self.sort(arr, 0, n-1)
+        return self.count
+
+    def sort(self, nums: List[Pair], low: int, high: int):
+        if low == high:
+            return
+        mid = int(low + (high - low)/2)
+        self.sort(nums, low, mid)
+        self.sort(nums, mid+1, high)
+        self.merge(nums, low, mid, high)
+
+    # 合并两个有序数组
+    def merge(self, arr: List[Pair], low: int, mid: int, high: int):
+        for i in range(low, high+1, 1):
+            self.temp[i] = arr[i]
+        i, j = low, mid+1
+        for p in range(low, high+1, 1):
+            if i == mid + 1:
+                arr[p] = self.temp[j]
+                j += 1
+            elif j == high + 1:
+                arr[p] = self.temp[i]
+                i += 1
+                # 更新 count 数组
+                self.count[arr[p].index] += j - mid - 1
+            elif self.temp[i].val > self.temp[j].val:
+                arr[p] = self.temp[j]
+                j += 1
+            else:
+                arr[p] = self.temp[i]
+                i += 1
+                # 更新 count 数组
+                self.count[arr[p].index] += j - mid - 1
+
+
+# solution = Solution()
+# print(solution.countSmaller([-1, -1]))
+
+# 【235】 [二叉搜索树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/)
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if not root:
+            return None
+        if p.val > q.val:
+            return self.lowestCommonAncestor(root, q, p)
+        if p.val <= root.val and q.val >= root.val:
+            return root
+        if p.val <= root.val and q.val <= root.val:
+            return self.lowestCommonAncestor(root.left, p, q)
+        if p.val >= root.val and q.val >= root.val:
+            return self.lowestCommonAncestor(root.right, p, q)
+
+
+# 【236】 [二叉树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
+# class Solution:
+#     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
