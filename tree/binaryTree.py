@@ -577,6 +577,7 @@ class Solution:
 # print(solution.countSmaller([-1, -1]))
 
 # 【235】 [二叉搜索树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/)
+# 剑指offer68
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
         if not root:
@@ -592,5 +593,33 @@ class Solution:
 
 
 # 【236】 [二叉树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
-# class Solution:
-#     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+# #难理解
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        # base case
+        if not root:
+            return None
+        if root.val == p.val or root.val == q.val:
+            return root
+
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+
+        # 情况 1 如果 p 和 q 都在以 root 为根的树中，那么 left 和 right 一定分别是 p 和 q（从 base case 看出来的）。
+        if left and right:
+            return root
+
+        # 情况 2，如果 p 和 q 都不在以 root 为根的树中，直接返回 null。
+        if not left and not right:
+            return None
+
+        # 情况 3，如果 p 和 q 只有一个存在于 root 为根的树中，函数返回该节点。
+        return right if not left else left
+
+
+p = TreeNode(5, TreeNode(6), TreeNode(2, TreeNode(7), TreeNode(4)))
+q = TreeNode(1, TreeNode(0), TreeNode(8))
+z = TreeNode(0)
+root = TreeNode(3, p, q)
+solution = Solution()
+print(solution.lowestCommonAncestor(root, p, z).val)
