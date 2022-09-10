@@ -178,6 +178,9 @@
 
 
 # 122 股票交易
+from typing import List
+
+
 class Solution(object):
     def maxProfit(self, prices):
         """
@@ -199,4 +202,53 @@ class Solution(object):
 
 
 solution = Solution()
-print(solution.maxProfit([7, 6, 4, 3, 1]))
+# print(solution.maxProfit([7, 6, 4, 3, 1]))
+
+
+# 【402】 [移掉k位数字](https://leetcode.cn/problems/remove-k-digits/)
+class Solution:
+    def removeKdigits(self, num: str, k: int) -> str:
+        numStack = []
+
+        # 构造一个递增的子序列
+        for digit in num:
+            while k and numStack and numStack[-1] > digit:
+                numStack.pop()
+                k -= 1
+
+            numStack.append(digit)
+
+        finalStack = numStack if k <= 0 else numStack[:-k]
+        return ''.join(finalStack).lstrip('0') or '0'
+
+
+solution = Solution()
+# print(solution.removeKdigits('1432219', 3))
+
+# 【860】[柠檬水找零](https://leetcode.cn/problems/lemonade-change/)
+
+
+class Solution:
+    def lemonadeChange(self, bills: List[int]) -> bool:
+        five, ten = 0, 0
+        for bill in bills:
+            if bill == 5:
+                five += 1
+            elif bill == 10:
+                if not five:
+                    return False
+                five -= 1
+                ten += 1
+            elif bill == 20:
+                if ten and five:
+                    ten -= 1
+                    five -= 1
+                elif not ten and five >= 3:
+                    five -= 3
+                else:
+                    return False
+        return True
+
+
+solution = Solution()
+print(solution.lemonadeChange([5, 5, 10, 10, 20]))

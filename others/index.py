@@ -197,4 +197,115 @@ class Solution:
 
 
 solution = Solution()
-print(solution.isAnagram("", ""))
+# print(solution.isAnagram("", ""))
+
+# 【14】 [最长公共前缀](https://leetcode.cn/problems/longest-common-prefix/)
+
+
+class Solution:
+    def longestCommonPrefix(self, strs: List[str]) -> str:
+        if not str:
+            return ''
+        prefix = strs[0]
+        for i in range(1, len(strs)):
+            prefix = self.lcp(prefix, strs[i])
+            if not prefix:
+                return ''
+        return prefix
+
+    def lcp(self, s1, s2):
+        minLen = len(s1) if len(s1) < len(s2) else len(s2)
+        prefix = ''
+        for i in range(minLen):
+            if s1[i] == s2[i]:
+                prefix += s1[i]
+            else:
+                return prefix
+        return prefix
+
+
+solution = Solution()
+# print(solution.longestCommonPrefix(["dog"]))
+
+# 【67】 [二进制求和](https://leetcode.cn/problems/add-binary/)
+
+
+class Solution:
+    def addBinary(self, a, b) -> str:
+        x, y = int(a, 2), int(b, 2)
+        while y:
+            answer = x ^ y
+            carry = (x & y) << 1
+            x, y = answer, carry
+        return bin(x)[2:]
+
+    def addBinary2(self, a, b) -> str:
+        return bin(int(a, 2)+int(b, 2))[2:]
+
+    def addBinary3(self, a, b) -> str:
+        if len(b) > len(a):
+            a, b = b, a
+        remain = 0
+        res = ''
+        i = len(a) - 1
+
+        for j in range(len(b)-1, -1, -1):
+            this = int(a[i]) + int(b[j]) + remain
+            remain = this // 2
+            res = str(this % 2) + res
+            i -= 1
+
+        for z in range(i, -1, -1):
+            this = int(a[z]) + remain
+            remain = this // 2
+            res = str(this % 2) + res
+
+        if remain:
+            res = '1' + res
+
+        return res
+
+
+solution = Solution()
+# print(solution.addBinary3("100", "110010"))
+
+# 【28】 [实现strStr()](https://leetcode.cn/problems/implement-strstr/)
+
+
+class Solution:
+    def strStr(self, haystack: str, needle: str) -> int:
+        n = len(needle)
+        m = len(haystack)
+        if m < n:
+            return -1
+        for i in range(m):
+            if haystack[i] == needle[0]:
+                if haystack[i:i+n] == needle:
+                    return i
+        return -1
+
+
+solution = Solution()
+# print(solution.strStr('aaaaa', 'll'))
+
+# 【118】 [杨辉三角](https://leetcode.cn/problems/pascals-triangle/)
+
+
+class Solution:
+    def generate(self, numRows: int) -> List[List[int]]:
+        if numRows < 1:
+            return []
+        res = [[1]]
+        for i in range(1, numRows, 1):
+            row = []
+            row.append(1)
+            preRow = res[i-1]
+            for j in range(0, len(preRow)-1, 1):
+                row.append(preRow[j]+preRow[j+1])
+            row.append(1)
+            res.append(row)
+        return res
+
+
+solution = Solution()
+print(solution.generate(5))

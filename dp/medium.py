@@ -2,7 +2,15 @@
 # coding=utf-8
 import collections
 from math import log2
-from typing import List
+from mimetypes import init
+from typing import List, Optional
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
 
 # 714 股票交易
@@ -69,23 +77,23 @@ from typing import List
 #           可能 text2[j] 不在 lcs 中：dp[i][j] =  dp[i][j-1]
 #
 # ③ base case: i == len(text1) or j == len(text2)
-# class Solution:
-#     def longestCommonSubsequence(self, text1: str, text2: str) -> int:
-#         m = len(text1) + 1
-#         n = len(text2) + 1
-#         dp = [[0] * n for _ in range(m)]
-#         for i in range(1, m):
-#             for j in range(1, n):
-#                 # 因为是从 1 开始，所以需要 -1
-#                 if text1[i-1] == text2[j-1]:
-#                     dp[i][j] = 1 + dp[i-1][j-1]
-#                 else:
-#                     dp[i][j] = max(dp[i-1][j], dp[i][j-1])
-#         return dp[m-1][n-1]
+class Solution:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        m = len(text1) + 1
+        n = len(text2) + 1
+        dp = [[0] * n for _ in range(m)]
+        for i in range(1, m):
+            for j in range(1, n):
+                # 因为是从 1 开始，所以需要 -1
+                if text1[i-1] == text2[j-1]:
+                    dp[i][j] = 1 + dp[i-1][j-1]
+                else:
+                    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+        return dp[m-1][n-1]
 
 
-# solution = Solution()
-# print(solution.longestCommonSubsequence("abcba", "abcbcba"))
+solution = Solution()
+print(solution.longestCommonSubsequence("abcba", "abcbcba"))
 
 # 【583】[两个字符串的删除操作](https://leetcode-cn.com/problems/delete-operation-for-two-strings/)
 # class Solution:
@@ -147,6 +155,7 @@ from typing import List
 # dp[i][j] 表示从 grid[0][0] 到 grid[i][j] 的最小路径和
 # 最优子结构： dp[i][j] = min(dp[i][j-1], dp[i-1][j]) + grid[i][j]
 # base case: dp[0][j] 和 dp[i][0]
+
 # class Solution:
 #     def minPathSum(self, grid: List[List[int]]) -> int:
 #         rows = len(grid)
@@ -168,7 +177,7 @@ from typing import List
 
 
 # solution = Solution()
-# print(solution.minPathSum([[1, 2, 3], [4, 5, 6]]))
+# print(solution.minPathSum([[1, 3, 1], [1, 5, 1], [4, 2, 1]]))
 
 
 # 【416】[分隔等和子集](https://leetcode-cn.com/problems/partition-equal-subset-sum/)
@@ -223,8 +232,10 @@ from typing import List
 
 
 # 【322】[零钱兑换](https://leetcode-cn.com/problems/coin-change/)
-# dp[i][j]：用 coins[..i] 凑出 j，最少用 dp[i][j] 个硬币
+# 定义状态为 amount
+# 确定 base case 为 amount=0 时硬币为 0
 # base case: dp[0][j] = 2^31, dp[i][0] = 0
+# dp[j]：用 coins[..i] 凑出 j，最少用 dp[j] 个硬币
 # 状态转移：dp[i][j] = min(dp[i-1][j], dp[i][j-coins[i-1]]+1)
 # 压缩，去掉 i 状态
 
@@ -252,26 +263,334 @@ from typing import List
 # dp[k, dist]: 从起点出发，经过K站中转到达 dist 节点的最小步数
 # base case: dp[0, src] = 0
 # 转换： dp[dist, k] = min(dp[s1, k-1] + w1, dp[s2][k-1] + w2)
-class Solution:
-    def findCheapestPrice(self, n: int, flights: List[List[int]], src: int, dst: int, k: int) -> int:
-        f = [[float("inf")] * n for _ in range(k + 2)]
-        f[0][src] = 0
-        # IMPORTANT! 遍历方式
-        for t in range(1, k + 2):
-            for j, i, cost in flights:
-                f[t][i] = min(f[t][i], f[t - 1][j] + cost)
 
-        ans = min(f[t][dst] for t in range(1, k + 2))
-        return -1 if ans == float("inf") else ans
+
+# class Solution:
+#     def findCheapestPrice(self, n: int, flights: List[List[int]], src: int, dst: int, k: int) -> int:
+#         f = [[float("inf")] * n for _ in range(k + 2)]
+#         f[0][src] = 0
+#         # IMPORTANT! 遍历方式
+#         for t in range(1, k + 2):
+#             for j, i, cost in flights:
+#                 f[t][i] = min(f[t][i], f[t - 1][j] + cost)
+
+#         ans = min(f[t][dst] for t in range(1, k + 2))
+#         return -1 if ans == float("inf") else ans
+
+
+# solution = Solution()
+# print(solution.findCheapestPrice(
+#     4, [[0, 1, 100], [1, 2, 100], [2, 0, 100], [1, 3, 600], [2, 3, 200]], 0, 3, 1))
+# print(solution.findCheapestPrice(
+#     3, [[0, 1, 100], [1, 2, 100], [0, 2, 500]], 0, 2, 1))
+# print(solution.findCheapestPrice(3,
+#                                  [[0, 1, 2], [1, 2, 1], [2, 0, 10]],
+#                                  1,
+#                                  2,
+#                                  1))
+
+
+# 【516】[最长回文子序列](https://leetcode.cn/problems/longest-palindromic-subsequence/)
+# class Solution:
+#     def longestPalindromeSubseq(self, s: str) -> int:
+#         # 状态： i, j 表示字符串区间的起始和终点
+#         n = len(s)
+#         dp = [[0] * n for _ in range(n)]
+#         # base case
+#         for i in range(n):
+#             dp[i][i] = 1
+#         # 状态转移，从末尾到头反过来遍历，因为下一个状态是 dp[i-1][j] 和 dp[i][j-1]
+#         for i in range(n-1, -1, -1):
+#             for j in range(i+1, n, 1):
+#                 if s[i] == s[j]:
+#                     dp[i][j] = dp[i+1][j-1] + 2
+#                 else:
+#                     dp[i][j] = max(dp[i+1][j], dp[i][j-1])
+
+#         return dp[0][n-1]
+
+
+# solution = Solution()
+# print(solution.longestPalindromeSubseq("bbbab"))
+
+
+# 【931】 [下降路径最小和](https://leetcode.cn/problems/minimum-falling-path-sum/)
+# class Solution:
+#     def minFallingPathSum(self, matrix: List[List[int]]) -> int:
+#         res = 99999
+#         n = len(matrix)
+#         # 初始化备忘录
+#         self.memo = [[666666] * n for _ in range(n)]
+#         # 结果在最后一行中选择
+#         for j in range(n):
+#             res = min(res, self.dp(matrix, n-1, j))
+#         return res
+
+#     def dp(self, matrix: List[List[int]], i: int, j: int) -> int:
+#         # base case
+#         if i < 0 or j < 0 or i >= len(matrix) or j >= len(matrix[0]):
+#             return 99999
+#         if i == 0:
+#             return matrix[0][j]
+#         # 查找备忘录：
+#         if self.memo[i][j] != 666666:
+#             return self.memo[i][j]
+#         # 状态转移：
+#         self.memo[i][j] = matrix[i][j] + min(
+#             self.dp(matrix, i-1, j-1),
+#             self.dp(matrix, i-1, j),
+#             self.dp(matrix, i-1, j+1),
+#         )
+#         return self.memo[i][j]
+
+
+# solution = Solution()
+# print(solution.minFallingPathSum([[2, 1, 3], [6, 5, 4], [7, 8, 9]]))
+
+# 【1048】 [最长字符串链](https://leetcode.cn/problems/longest-string-chain/)
+class Solution:
+    def longestStrChain(self, words: List[str]) -> int:
+
+        def check(pre, post):
+            cnt = 0
+            m = len(post)
+            x = 0
+            for k in range(m):
+                if post[k] == pre[x]:
+                    x += 1
+                else:
+                    cnt += 1
+                if cnt >= 2:
+                    return False
+                if x == len(pre):
+                    break
+            return True
+        words.sort(key=lambda x: len(x))
+        dct = collections.defaultdict(list)
+        n = len(words)
+        dp = [1]*n
+        for i in range(n):
+            for j in dct[len(words[i])-1]:
+                if check(words[j], words[i]) and dp[j]+1 > dp[i]:
+                    dp[i] = dp[j] + 1
+            dct[len(words[i])].append(i)
+        return max(dp)
 
 
 solution = Solution()
-print(solution.findCheapestPrice(
-    4, [[0, 1, 100], [1, 2, 100], [2, 0, 100], [1, 3, 600], [2, 3, 200]], 0, 3, 1))
-print(solution.findCheapestPrice(
-    3, [[0, 1, 100], [1, 2, 100], [0, 2, 500]], 0, 2, 1))
-print(solution.findCheapestPrice(3,
-                                 [[0, 1, 2], [1, 2, 1], [2, 0, 10]],
-                                 1,
-                                 2,
-                                 1))
+print(solution.longestStrChain(["a", "b", "ba", "bca", "bda", "bdca"]))
+
+
+# 【674】 [最长连续递增序列](https://leetcode.cn/problems/longest-continuous-increasing-subsequence/)
+class Solution:
+    def findLengthOfLCIS(self, nums: List[int]) -> int:
+        n = len(nums)
+        dp = [1] * n
+        res = 1
+        start = 0
+
+        for i in range(n):
+            if i > 0 and nums[i] <= nums[i-1]:
+                start = i
+            else:
+                dp[i] = i - start + 1
+                res = max(res, dp[i])
+        return res
+
+
+# solution = Solution()
+# print(solution.findLengthOfLCIS([2, 2, 2, 2, 2]))
+
+# 【198】 [打家劫舍](https://leetcode.cn/problems/house-robber/)
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        # dp[i] 表示在[0..i] 能偷到的最大值
+        # 状态：偷与不偷
+        # 转移方程：max(dp[i-2]+nums[i], dp[i-1])
+        n = len(nums)
+        # base case
+        if n == 0:
+            return 0
+        if n == 1:
+            return nums[0]
+        if n == 2:
+            return max(nums[0], nums[1])
+        # 状态转移
+        dp = [0] * n
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+        for i in range(2, n, 1):
+            dp[i] = max(dp[i-2]+nums[i], dp[i-1])
+        return dp[n-1]
+
+
+# solution = Solution()
+# print(solution.rob([2, 7, 9, 3, 1]))
+
+# 【279】 [完全平方数](https://leetcode.cn/problems/perfect-squares/)
+class Solution:
+    def numSquares(self, n: int) -> int:
+        # dp[i] 表示数字 i 的最小完全平方数
+        # base case: dp[1] = 1
+        # 状态：是否使用某个平方数
+        dp = [0] * (n+1)
+        for i in range(1, n+1):
+            dp[i] = i  # 最差情况，都由1组成
+            j = 1
+            while j * j <= i:
+                dp[i] = min(dp[i], dp[i-j*j]+1)
+                j += 1
+        return dp[n]
+
+
+# solution = Solution()
+# print(solution.numSquares(1))
+
+# 【213】[打家劫舍II](https://leetcode.cn/problems/house-robber-ii/)
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        def robRange(start, end):
+            # 计算区间[start, end]的最优解, 压缩了 dp 状态
+            first = nums[start]
+            second = max(first, nums[start+1])
+            for i in range(start+2, end+1):
+                first, second = second, max(first+nums[i], second)
+            return second
+
+        n = len(nums)
+        if n == 1:
+            return nums[0]
+        if n == 2:
+            return max(nums[0], nums[1])
+        else:
+            return max(robRange(1, n-1), robRange(0, n-2))
+
+
+# solution = Solution()
+# print(solution.rob([2, 3, 2]))
+
+# 【337】[打家劫舍III](https://leetcode.cn/problems/house-robber-iii/)
+class Solution:
+    def __init__(self) -> None:
+        self.memo = {}
+
+    def rob(self, root: Optional[TreeNode]) -> int:
+        if not root:
+            return 0
+        if self.memo.get(root, -1) != -1:
+            return self.memo.get(root)
+        robIt = root.val + (self.rob(root.left.left) + self.rob(root.left.right) if root.left else 0) + \
+            (self.rob(root.right.left) +
+             self.rob(root.right.right) if root.right else 0)
+        unRobIt = self.rob(root.left) + self.rob(root.right)
+        res = max(robIt, unRobIt)
+        self.memo[root] = res
+        return res
+
+# 【不同路径】[62](https://leetcode.cn/problems/unique-paths/)
+
+
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        # dp[i][j] 从起点走到 （i，j）的不同路径数
+        # 状态：从哪边过来
+        dp = [[0] * n for _ in range(m)]
+        # base case
+        for j in range(n):
+            dp[0][j] = 1
+        for i in range(m):
+            dp[i][0] = 1
+
+        for i in range(1, m):
+            for j in range(1, n):
+                dp[i][j] = dp[i][j-1] + dp[i-1][j]
+        return dp[m-1][n-1]
+
+
+solution = Solution()
+# print(solution.uniquePaths(7, 3))
+
+# 【不同路径II】[63](https://leetcode.cn/problems/unique-paths-ii/)
+
+
+class Solution:
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        m = len(obstacleGrid)
+        n = len(obstacleGrid[0])
+        dp = [[0] * n for _ in range(m)]
+        i, j = 0, 0
+        while i < m and obstacleGrid[i][0] == 0:
+            dp[i][0] = 1
+            i += 1
+        while j < n and obstacleGrid[0][j] == 0:
+            dp[0][j] = 1
+            j += 1
+        for i in range(1, m):
+            for j in range(1, n):
+                if obstacleGrid[i][j] == 0:
+                    dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        return dp[m-1][n-1]
+
+
+solution = Solution()
+# print(solution.uniquePathsWithObstacles([[1, 0]]))
+
+# 【121】[买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)
+# 这里注意只能购买一次
+
+
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        n = len(prices)
+        dp = [[0] * 2 for _ in range(n)]
+        dp[0][0] = 0
+        dp[0][1] = -prices[0]
+        for i in range(1, n):
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i])
+            dp[i][1] = max(dp[i - 1][1], -prices[i])
+        return dp[n-1][0]
+
+    def maxProfit2(self, prices: List[int]) -> int:
+        n = len(prices)
+        dp = [[0] * 2 for _ in range(n)]
+        dp[0][0] = 0
+        dp[0][1] = -prices[0]
+        for i in range(1, n):
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i])
+            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i])
+        return dp[n-1][0]
+
+    def maxProfit3(self, prices: List[int]) -> int:
+        n = len(prices)
+        dp = [[0] * 2 for _ in range(n)]
+        if n >= 1:
+            dp[0][0] = 0
+            dp[0][1] = -prices[0]
+        if n >= 2:
+            dp[1][0] = max(dp[0][0], dp[0][1] + prices[1])
+            dp[1][1] = max(dp[0][1],  -prices[1])
+        for i in range(2, n):
+            dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
+            dp[i][1] = max(dp[i-1][1],  dp[i-2][0]-prices[i])
+
+        return dp[n-1][0]
+
+    def maxProfit5(self, prices: List[int]) -> int:
+        n = len(prices)
+        max_k = 2
+        dp = [[[0] * 2 for _ in range(max_k+1)] for _ in range(n)]
+
+        for i in range(0, n):
+            for k in range(max_k, 0, -1):
+                if i - 1 == -1:
+                    # base case
+                    dp[i][k][0] = 0
+                    dp[i][k][1] = -prices[0]
+                    continue
+                dp[i][k][0] = max(dp[i-1][k][0], dp[i-1][k][1]+prices[i])
+                dp[i][k][1] = max(dp[i-1][k][1], dp[i-1][k-1][0]-prices[i])
+        return dp[n-1][max_k][0]
+
+
+solution = Solution()
+# print(solution.maxProfit5([3, 3, 5, 0, 0, 3, 1, 4]))
