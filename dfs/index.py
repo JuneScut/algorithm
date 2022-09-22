@@ -1,6 +1,7 @@
 from typing import List
 
 
+# 【980】 [不同路径III](https://leetcode.cn/problems/unique-paths-iii/)
 class Solution:
     def uniquePathsIII(self, grid: List[List[int]]) -> int:
 
@@ -83,4 +84,43 @@ class Solution:
 
 
 solution = Solution()
-print(solution.restoreIpAddresses('101023'))
+# print(solution.restoreIpAddresses('101023'))
+
+# 【200】[岛屿数量](https://leetcode.cn/problems/number-of-islands/)
+
+
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        count = 0
+        m, n = len(grid), len(grid[0])
+        dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+
+        def dfs(x: int, y: int):
+            # 边界判断
+            if x < 0 or x >= m or y < 0 or y >= n:
+                return
+            # 已经改过或者本来是水了
+            if grid[x][y] == '0':
+                return
+            grid[x][y] = '0'
+            # 遍历周围
+            for (addX, addY) in dirs:
+                nextX, nextY = x+addX, y+addY
+                dfs(nextX, nextY)
+
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == '1':
+                    count += 1
+                    dfs(i, j)  # 用 dfs 把周围的 1 都淹没，避免使用 visited 数组
+
+        return count
+
+
+solution = Solution()
+print(solution.numIslands([
+    ["1", "1", "0", "0", "0"],
+    ["1", "1", "0", "0", "0"],
+    ["0", "0", "1", "0", "0"],
+    ["0", "0", "0", "1", "1"]
+]))

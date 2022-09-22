@@ -91,26 +91,25 @@ solution = Solution()
 
 class Solution:
     result = 0
+    curSum = 0
 
-    def findTargetSumWays2(self, nums: List[int], target: int) -> int:
-        n = len(nums)
+    def findTargetSumWays(self, nums: List[int], target: int) -> int:
+        # self.backtrack(nums, 0, target)
+        # return self.result
+        return self.findTargetSumWays(nums, target)
 
-        def backtrack(res, idx):
-            # 结束条件
-            if idx == n:
-                if res == target:
-                    self.result += 1
-                return
-            # 做选择, +
-            res += nums[idx]
-            backtrack(res, idx+1)
-            # 恢复, 做选择, -
-            res -= nums[idx] * 2
-            backtrack(res, idx + 1)
+    def backtrack(self, nums: List[int], idx: int, target: int):
+        if idx == len(nums):
+            if self.curSum == target:
+                self.result += 1
+            return
+        self.curSum += nums[idx]
+        self.backtrack(nums, idx+1, target)
 
-        backtrack(0, 0)
+        self.curSum -= nums[idx] * 2
+        self.backtrack(nums, idx+1, target)
 
-        return self.result
+        self.curSum += nums[idx]
 
     def findTargetSumWays(self, nums: List[int], target: int) -> int:
         sum_nums, n = sum(nums), len(nums)
@@ -134,7 +133,7 @@ class Solution:
 
 
 solution = Solution()
-# print(solution.findTargetSumWays([1, 1, 1, 1, 1], 3))
+print(solution.findTargetSumWays([1, 1, 1, 1, 1], 3))
 
 # 【78】[子集](https://leetcode.cn/problems/subsets/)
 
@@ -306,4 +305,7 @@ class Solution:
 
 
 solution = Solution()
-print(solution.combinationSum([2, 3, 5], 8))
+# print(solution.combinationSum([2, 3, 5], 8))
+
+
+#

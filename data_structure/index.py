@@ -165,3 +165,25 @@ param_6 = circularQueue.isFull()
 param_7 = circularQueue.deleteLast()
 param_8 = circularQueue.insertFront(4)
 param_9 = circularQueue.getFront()
+
+
+# 【1209】 [删除字符串中所有的相邻重复项](https://leetcode.cn/problems/remove-all-adjacent-duplicates-in-string-ii/)
+class Solution:
+    def removeDuplicates(self, s: str, k: int) -> str:
+        stack = [[s[0], 1]]
+        for ch in s[1:]:
+            if len(stack) > 0 and ch == stack[-1][0]:
+                stack[-1][1] += 1
+            else:
+                stack.append([ch, 1])
+            if len(stack) > 0 and stack[-1][1] == k:
+                stack.pop()
+        ans = ''
+        for item in stack:
+            ch, count = item[0], item[1]
+            ans += ch * count
+        return ans
+
+
+solution = Solution()
+print(solution.removeDuplicates('pbbcggttciiippooaais', 2))

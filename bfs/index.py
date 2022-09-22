@@ -19,7 +19,7 @@ class Solution:
         queque = [root]
         while queque:
             n = len(queque)
-            for i in range(n):
+            for _ in range(n):
                 node = queque.pop(0)
                 if not node.left and not node.right:
                     return depth

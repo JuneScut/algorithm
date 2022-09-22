@@ -308,4 +308,20 @@ class Solution:
 
 
 solution = Solution()
-print(solution.generate(5))
+# print(solution.generate(5))
+
+# 【406】[根据身高重建队列](https://leetcode.cn/problems/queue-reconstruction-by-height/)
+
+
+class Solution:
+    def reconstructQueue(self, people: List[List[int]]) -> List[List[int]]:
+        people.sort(key=lambda x: (-x[0], x[1]))
+        ans = list()
+        for person in people:
+            ans[person[1]:person[1]] = [person]  # 等于 insert
+        return ans
+
+
+solution = Solution()
+print(solution.reconstructQueue(
+    [[9, 0], [7, 0], [1, 9], [3, 0], [2, 7], [5, 3], [6, 0], [3, 4], [6, 2], [5, 2]]))

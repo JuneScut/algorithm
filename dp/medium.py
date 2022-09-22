@@ -93,7 +93,7 @@ class Solution:
 
 
 solution = Solution()
-print(solution.longestCommonSubsequence("abcba", "abcbcba"))
+# print(solution.longestCommonSubsequence("abcba", "abcbcba"))
 
 # 【583】[两个字符串的删除操作](https://leetcode-cn.com/problems/delete-operation-for-two-strings/)
 # class Solution:
@@ -186,45 +186,64 @@ print(solution.longestCommonSubsequence("abcba", "abcbcba"))
 # dp[i][j] 定义：前 i 个物品，是否能装满重量为 j, base case: dp[0][...] = 0, dp[...][0] = 1
 # 转移：dp[i][j] = dp[i-1][j] || dp[i-1][j-nums[i]]
 # 一维压缩, TODO:
-# class Solution:
-#     def canPartition(self, nums: List[int]) -> bool:
-#         n = len(nums)
-#         total = sum(nums)
-#         if total % 2 == 1:
-#             return False
-#         target = total // 2
-#         dp = [[False] * (target+1) for _ in range(n+1)]
-#         for i in range(0, n+1):
-#             dp[i][0] = True
-#         for i in range(1, n+1):
-#             for j in range(1, target + 1):
-#                 if j >= nums[i-1]:
-#                     dp[i][j] = dp[i-1][j] or dp[i-1][j-nums[i-1]]
-#                 else:
-#                     dp[i][j] = dp[i-1][j]
-#         return dp[n][target]
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        n = len(nums)
+        total = sum(nums)
+        if total % 2 == 1:
+            return False
+        target = total // 2
+        dp = [[False] * (target+1) for _ in range(n+1)]
+        for i in range(0, n+1):
+            dp[i][0] = True
+        for i in range(1, n+1):
+            for j in range(1, target + 1):
+                if j >= nums[i-1]:
+                    dp[i][j] = dp[i-1][j] or dp[i-1][j-nums[i-1]]
+                else:
+                    dp[i][j] = dp[i-1][j]
+        return dp[n][target]
+
+    def canPartition2(self, nums: List[int]) -> bool:
+        n = len(nums)
+        total = sum(nums)
+        if total % 2 == 1:
+            return False
+        target = total // 2
+        dp = [False] * (total+1)
+
+        # base case
+        dp[0] = True
+        for i in range(0, n):
+            for j in range(target, -1, -1):
+                if j >= nums[i]:
+                    dp[j] = dp[j] or dp[j-nums[i]]
+
+        return dp[target]
 
 
-# solution = Solution()
-# print(solution.canPartition([1, 2, 3, 5]))
+solution = Solution()
+print(solution.canPartition2([1, 5, 11, 5]))
 
 # 【53】[零钱兑换2](https://leetcode-cn.com/problems/coin-change-2/)
 # dp[i][j]：用 coins[..i] 凑出 j，共有 dp[i][j] 种方法
 # base case: dp[0][j] = 0, dp[i][0] = 1
 # 状态转移： dp[i][j] = dp[i-1][j] + dp[i][j-coins[i-1]]
-# class Solution:
-#     def change(self, amount: int, coins: List[int]) -> int:
-#         n = len(coins)
-#         dp = [[0] * (amount + 1) for _ in range(n + 1)]
-#         for i in range(n+1):
-#             dp[i][0] = 1
-#         for i in range(1, n+1):
-#             for j in range(1, amount + 1):
-#                 if j >= coins[i-1]:
-#                     dp[i][j] = dp[i-1][j] + dp[i][j-coins[i-1]]
-#                 else:
-#                     dp[i][j] = dp[i-1][j]
-#         return dp[n][amount]
+
+
+class Solution:
+    def change(self, amount: int, coins: List[int]) -> int:
+        n = len(coins)
+        dp = [[0] * (amount + 1) for _ in range(n + 1)]
+        for i in range(n+1):
+            dp[i][0] = 1
+        for i in range(1, n+1):
+            for j in range(1, amount + 1):
+                if j >= coins[i-1]:
+                    dp[i][j] = dp[i-1][j] + dp[i][j-coins[i-1]]
+                else:
+                    dp[i][j] = dp[i-1][j]
+        return dp[n][amount]
 
 
 # solution = Solution()
@@ -239,21 +258,21 @@ print(solution.longestCommonSubsequence("abcba", "abcbcba"))
 # 状态转移：dp[i][j] = min(dp[i-1][j], dp[i][j-coins[i-1]]+1)
 # 压缩，去掉 i 状态
 
-# class Solution:
-#     def coinChange(self, coins: List[int], amount: int) -> int:
-#         n = len(coins)
-#         intMax = amount + 1
-#         dp = [intMax] * (amount + 1)
-#         dp[0] = 0
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        n = len(coins)
+        intMax = amount + 1
+        dp = [intMax] * (amount + 1)
+        dp[0] = 0
 
-#         for j in range(0, amount + 1):
-#             for coin in coins:
-#                 if j >= coin:
-#                     dp[j] = min(dp[j], dp[j-coin] + 1)
-#                 else:
-#                     continue
+        for j in range(0, amount + 1):
+            for coin in coins:
+                if j >= coin:
+                    dp[j] = min(dp[j], dp[j-coin] + 1)
+                else:
+                    continue
 
-#         return dp[amount] if dp[amount] != intMax else -1
+        return dp[amount] if dp[amount] != intMax else -1
 
 
 # solution = Solution()

@@ -80,6 +80,7 @@ class Solution:
             p += 1
 
 # 【76】 [最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/)
+# 滑动窗口
 
 
 class Solution:
@@ -412,4 +413,33 @@ class Solution:
 
 
 solution = Solution()
-print(solution.threeSum([1, 2, -2, -1]))
+# print(solution.threeSum([1, 2, -2, -1]))
+
+# 【209】[长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)
+
+
+class Solution:
+    def minSubArrayLen(self, target: int, nums: List[int]) -> int:
+        left, right = 0, 0
+        n = len(nums)
+        total = 0
+        minLen = n+1
+        while right < n:
+            inNum = nums[right]
+            right += 1
+            total += inNum
+            if total >= target:
+                minLen = min(minLen, right-left)
+            # 是否需要缩小窗口
+            while total > target:
+                outNum = nums[left]
+                left += 1
+                total -= outNum
+                if total >= target:
+                    minLen = min(minLen, right-left)
+
+        return minLen if minLen <= n else 0
+
+
+solution = Solution()
+print(solution.minSubArrayLen(11, [1, 1, 1, 1, 1, 1, 1, 1]))

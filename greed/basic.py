@@ -1,4 +1,7 @@
 # coding=utf-8
+from itertools import count
+from typing import List
+
 # (Easy) 分配问题 455. 分发饼干
 # class Solution(object):
 #     def findContentChildren(self, g, s):
@@ -178,7 +181,6 @@
 
 
 # 122 股票交易
-from typing import List
 
 
 class Solution(object):
@@ -223,7 +225,7 @@ class Solution:
 
 
 solution = Solution()
-# print(solution.removeKdigits('1432219', 3))
+print(solution.removeKdigits('1432219', 3))
 
 # 【860】[柠檬水找零](https://leetcode.cn/problems/lemonade-change/)
 
@@ -251,4 +253,44 @@ class Solution:
 
 
 solution = Solution()
-print(solution.lemonadeChange([5, 5, 10, 10, 20]))
+# print(solution.lemonadeChange([5, 5, 10, 10, 20]))
+
+# 【435】[无重叠区间](https://leetcode.cn/problems/non-overlapping-intervals/)
+# 贪心算法，先选择最早结束的，然后依次排除
+
+
+class Solution:
+    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+        intervals.sort(key=lambda i: i[1])
+        curEnd = intervals[0][1]
+        count = 1  # 互不相交的数量
+        for i in range(1, len(intervals)):
+            [start, end] = intervals[i]
+            if start >= curEnd:
+                count += 1
+                curEnd = end
+        return len(intervals)-count
+
+
+solution = Solution()
+# print(solution.eraseOverlapIntervals([[1, 2], [2, 3]]))
+
+# 【452】[用最少数量的箭引爆气球](https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/)
+
+
+class Solution:
+    def findMinArrowShots(self, points: List[List[int]]) -> int:
+        points.sort(key=lambda x: x[1])
+        curEnd = points[0][1]
+        count = 1
+        for i in range(1, len(points)):
+            [start, end] = points[i]
+            if start > curEnd:
+                count += 1
+                curEnd = end
+        return count
+
+
+solution = Solution()
+# print(solution.findMinArrowShots([[3, 9], [7, 12], [3, 8], [
+#       6, 8], [9, 10], [2, 9], [0, 9], [3, 9], [0, 6], [2, 8]]))
