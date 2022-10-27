@@ -60,7 +60,7 @@ class Solution:
         visited.add('0000')
         while q:
             n = len(q)
-            for i in range(n):
+            for _ in range(n):
                 cur = q.pop(0)
                 # 遍历终点
                 if cur in deads:
