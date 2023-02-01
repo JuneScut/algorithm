@@ -1,6 +1,7 @@
 # !/usr/bin/env python3
 # coding=utf-8
 
+import heapq
 import random
 from typing import List, Optional
 
@@ -384,17 +385,17 @@ class Solution:
         return list1
 
 
-solution = Solution()
-print(solution.mergeInBetween(
-    ListNode(0,
-             ListNode(1,
-                      ListNode(2,
-                               ListNode(3,
-                                        ListNode(4,
-                                                 ListNode(5)))))), 3, 3,
+# solution = Solution()
+# print(solution.mergeInBetween(
+#     ListNode(0,
+#              ListNode(1,
+#                       ListNode(2,
+#                                ListNode(3,
+#                                         ListNode(4,
+#                                                  ListNode(5)))))), 3, 3,
 
-    ListNode(1000000, ListNode(1000001))
-))
+#     ListNode(1000000, ListNode(1000001))
+# ))
 
 
 # 【83】[分隔链表](https://leetcode.cn/problems/partition-list/)
@@ -421,3 +422,131 @@ class Solution:
             p = temp
         p1.next = dummy2.next
         return dummy1.next
+
+
+# 【23】[合并k个链表](https://leetcode.cn/problems/merge-k-sorted-lists/)
+# python heapq 不支持传入比较函数
+# trick: 利用元组记录是第几个链表
+class Solution:
+    def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+        heads = []
+        dummy = ListNode(-1)
+        cur = dummy
+        for i in range(len(lists)):
+            if lists[i]:
+                heapq.heappush(heads, (lists[i].val, i))
+                lists[i] = lists[i].next
+        while heads:
+            val, i = heapq.heappop(heads)
+            cur.next = ListNode(val)
+            cur = cur.next
+            if lists[i]:
+                heapq.heappush(heads, (lists[i].val, i))
+                lists[i] = lists[i].next
+        return dummy.next
+
+
+# solution = Solution()
+# solution.mergeKLists([ListNode(1, ListNode(4, ListNode(5))), ListNode(
+#     1, ListNode(3, ListNode(4))), ListNode(2, ListNode(6))])
+
+
+# 【19】[删除链表的倒数第N个结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        dummy = ListNode(0, head)
+        p1 = head
+        p2 = dummy
+        for _ in range(0, n):
+            p1 = p1.next
+        while p1:
+            p1 = p1.next
+            p2 = p2.next
+        p2.next = p2.next.next
+        return dummy.next
+
+
+solution = Solution()
+# print(solution.removeNthFromEnd(ListNode(1), 1))
+
+# 【876】[链表的中间结点](https://leetcode.cn/problems/middle-of-the-linked-list/)
+
+
+class Solution:
+    def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        fast, slow = head, head
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+        return slow
+
+
+solution = Solution()
+# print(solution.middleNode(ListNode(1, ListNode(
+#     2))))
+
+# 【141】[环形链表](https://leetcode.cn/problems/linked-list-cycle/)
+# 类似876，同样使用快慢指针
+# 判断是否有环：快慢指针是否能相遇
+
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        fast, slow = head, head
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+            if fast == slow:
+                return True
+        return False
+
+
+# 【142】[环形链表](https://leetcode.cn/problems/linked-list-cycle-ii/)
+class Solution:
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        # 先到相遇点
+        fast, slow = head, head
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+            if slow == fast:
+                break
+        # 可能没有环
+        if not fast or not fast.next:
+            return None
+        # 相遇后，一个放到起点，一个继续在相遇点，以同样的速度，再次相交时便在环的起点了（画图分析）
+        slow = head
+        while fast != slow:
+            fast = fast.next
+            slow = slow.next
+        return fast
+
+
+node1 = ListNode(3)
+node2 = ListNode(2)
+node3 = ListNode(0)
+node4 = ListNode(-4)
+
+node1.next = node2
+node2.next = node3
+node3.next = node4
+node4.next = node2
+
+solution = Solution()
+# print(solution.detectCycle(node1))
+
+
+# 【160】[相交链表](https://leetcode.cn/problems/intersection-of-two-linked-lists/)
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> Optional[ListNode]:
+        p1, p2 = headA, headB
+        while p1 != p2:
+            if p1:
+                p1 = p1.next
+            else:
+                p1 = headB
+            if p2:
+                p2 = p2.next
+            else:
+                p2 = headA
+        return p1

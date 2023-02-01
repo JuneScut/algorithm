@@ -23,9 +23,11 @@ class Solution:
     def maxPathSum(self, root: Optional[TreeNode]) -> int:
         if not root:
             return 0
+        # 计算单边路径和时顺便计算最大路径和
         self.oneSidePathSum(root)
         return self.maxSum
 
+    # // 定义：计算从根节点 root 为起点的最大单边路径和
     def oneSidePathSum(self, root: Optional[TreeNode]) -> int:
         if not root:
             return 0

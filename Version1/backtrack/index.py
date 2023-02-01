@@ -22,6 +22,8 @@ class Solution:
         if len(track) == len(nums):
             self.res.append(track[:])
             return
+        # 📌 因为是排列，所以 nums[i] 之后也可以出现 nums[i] 左边的元素， 因此需要从 0 开始，
+        # 📌 并且用 used 数组额外标记哪些元素已经不可再选择
         for i in range(0, len(nums)):
             if used[i]:
                 continue
@@ -154,6 +156,7 @@ class Solution:
         self.trace.pop()
         self.backtrack(nums, start+1)
 
+    # 回溯算法核心函数，遍历子集问题的回溯树
     def backtrack2(self, nums, start: int):
         self.res.append(self.trace[:])
 

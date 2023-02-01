@@ -223,7 +223,7 @@ class Solution:
 
 
 solution = Solution()
-print(solution.canPartition2([1, 5, 11, 5]))
+# print(solution.canPartition2([1, 5, 11, 5]))
 
 # 【53】[零钱兑换2](https://leetcode-cn.com/problems/coin-change-2/)
 # dp[i][j]：用 coins[..i] 凑出 j，共有 dp[i][j] 种方法
@@ -260,23 +260,20 @@ class Solution:
 
 class Solution:
     def coinChange(self, coins: List[int], amount: int) -> int:
-        n = len(coins)
-        intMax = amount + 1
-        dp = [intMax] * (amount + 1)
+        dp = [amount+1] * (amount+1)  # amount+1 作为一个标记符,就相当于初始化为正无穷
+
+        # base case
         dp[0] = 0
-
-        for j in range(0, amount + 1):
+        for i in range(amount+1):
             for coin in coins:
-                if j >= coin:
-                    dp[j] = min(dp[j], dp[j-coin] + 1)
-                else:
-                    continue
+                if i >= coin:
+                    dp[i] = min(dp[i], dp[i-coin]+1)
 
-        return dp[amount] if dp[amount] != intMax else -1
+        return -1 if dp[amount] == amount+1 else dp[amount]
 
 
-# solution = Solution()
-# print(solution.coinChange([1, 2, 5], 100))
+solution = Solution()
+print(solution.coinChange([1], 0))
 
 # 【787】[K站中转内最便宜的航班](https://leetcode-cn.com/problems/cheapest-flights-within-k-stops/)
 # dp[k, dist]: 从起点出发，经过K站中转到达 dist 节点的最小步数
@@ -397,7 +394,7 @@ class Solution:
 
 
 solution = Solution()
-print(solution.longestStrChain(["a", "b", "ba", "bca", "bda", "bdca"]))
+# print(solution.longestStrChain(["a", "b", "ba", "bca", "bda", "bdca"]))
 
 
 # 【674】 [最长连续递增序列](https://leetcode.cn/problems/longest-continuous-increasing-subsequence/)

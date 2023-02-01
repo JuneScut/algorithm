@@ -11,19 +11,22 @@ class ListNode:
 
 class Solution:
     def removeDuplicates(self, nums: List[int]) -> int:
-        slow, fast = 0, 0
+        slow, fast = 0, 1
         while fast < len(nums):
-            if nums[slow] != nums[fast]:
+            if nums[fast] != nums[slow]:
                 slow += 1
                 nums[slow] = nums[fast]
-            fast += 1
+            else:
+                fast += 1
         return slow+1
 
 
-# solution = Solution()
-# print(solution.removeDuplicates([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
+solution = Solution()
+print(solution.removeDuplicates([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
 
 # 【83】 [删除链表中的重复项](https://leetcode.cn/problems/remove-duplicates-from-sorted-list/)
+
+
 class Solution:
     def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
         slow, fast = head, head
@@ -442,4 +445,4 @@ class Solution:
 
 
 solution = Solution()
-print(solution.minSubArrayLen(11, [1, 1, 1, 1, 1, 1, 1, 1]))
+# print(solution.minSubArrayLen(11, [1, 1, 1, 1, 1, 1, 1, 1]))
