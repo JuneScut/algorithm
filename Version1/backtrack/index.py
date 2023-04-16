@@ -167,7 +167,7 @@ class Solution:
 
 
 solution = Solution()
-# print(solution.subsets([1, 2, 3]))
+print(solution.subsets([1, 2, 3]))
 
 # 【77】 [组合](https://leetcode.cn/problems/combinations/)
 
