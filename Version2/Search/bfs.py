@@ -2,13 +2,15 @@
 from typing import List
 
 # [79. 单词搜索](https://leetcode.cn/problems/word-search/?favorite=2cktkvj)
+
+
 class Solution:
     def exist(self, board: List[List[str]], word: str) -> bool:
         m, n = len(board), len(board[0])
         self.found = False
         for i in range(m):
             for j in range(n):
-                self.traverse(board, word, i, j ,0)
+                self.traverse(board, word, i, j, 0)
                 if self.found:
                     return True
         return self.found
@@ -35,6 +37,7 @@ class Solution:
         # 撤销
         board[i][j] = board[i][j][1:]
 
-board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]]
+
+board = [["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]]
 word = "ABCB"
-print(Solution().exist(board, word))
+# print(Solution().exist(board, word))
