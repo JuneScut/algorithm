@@ -36,4 +36,4 @@ grid = grid = [
     ["0", "0", "0", "1", "1"]
 ]
 
-print(Solution().numIslands(grid))
+# print(Solution().numIslands(grid))
