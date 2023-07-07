@@ -1,6 +1,8 @@
 from typing import List
 
 # [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/?favorite=2cktkvj)
+
+
 class Solution:
     def searchRange(self, nums: List[int], target: int) -> List[int]:
         l = self.findLeftBound(nums, target)
@@ -32,12 +34,18 @@ class Solution:
                 left = mid + 1
             elif nums[mid] > target:
                 right = mid - 1
-        if right < 0:
-            return right
-        return right if nums[right] == target else -1
+        # if right < 0:
+        #     return right
+        # return right if nums[right] == target else -1
+        # 此时 left - 1 索引越界
+        if left - 1 < 0:
+            return -1
+        # 判断一下 nums[left] 是不是 target
+        return left - 1 if nums[left - 1] == target else -1
 
-nums = []
-# print(Solution().searchRange(nums, 6))
+
+nums = [5, 7, 7, 8, 8, 10]
+print(Solution().searchRange(nums, 8))
 
 
 # [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
@@ -54,7 +62,7 @@ class Solution:
             if nums[0] <= nums[mid]:
                 # target 在左边
                 if nums[0] <= target and target < nums[mid]:
-                    right = mid -1
+                    right = mid - 1
                 # target 在右边
                 else:
                     left = mid + 1
@@ -68,10 +76,8 @@ class Solution:
                     right = mid - 1
         return -1
 
+
 # nums = [4,5,6,7,0,1,2]
 # nums = [6, 7, 0, 1, 2, 4, 5]
-nums = [1]
-print(Solution().search(nums, 0))
-            
-                
-
+# nums = [1]
+# print(Solution().search(nums, 0))

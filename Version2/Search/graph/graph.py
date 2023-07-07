@@ -91,9 +91,10 @@ class Solution:
         self.graph = [[] for _ in range(numCourses)]
         self.buildGraph(prerequisites)
         self.hasCycle = False
-        self.postorder = []  # 记录后续遍历的结果
+        self.postorder = []  # 记录后序遍历的结果
         self.visited = [False for _ in range(numCourses)]
         self.onPath = [False for _ in range(numCourses)]
+        # 图可能不是全联通的，所以需要从每个点都开始遍历
         for i in range(numCourses):
             self.traverse(i)
         if self.hasCycle:
